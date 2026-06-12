@@ -25,6 +25,8 @@ async function obtenerProductos(categoriaId) {
       id,
       categoria_id,
       nombre,
+      descripcion,
+      imagen_url,
       precio,
       disponible,
       orden

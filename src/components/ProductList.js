@@ -9,20 +9,6 @@ function precioMXN(precio) {
   }).format(Number(precio || 0));
 }
 
-function obtenerImagenProducto(categoriaNombre, productoNombre) {
-  const categoria = categoriaNombre.toLowerCase();
-  const producto = productoNombre.toLowerCase();
-
-  if (categoria.includes("lonche")) return "/images/lon.png";
-  if (categoria.includes("hamburguesa")) return "/images/amb.png";
-  if (categoria.includes("hot")) return "/images/jot.webp";
-  if (categoria.includes("burrita")) return "/images/bur.png";
-  if (producto.includes("salchicha")) return "/images/sal.png";
-  if (categoria.includes("papa")) return "/images/pap.webp";
-
-  return "/logo.jpeg";
-}
-
 function leerCarrito() {
   if (typeof window === "undefined") return [];
 
@@ -63,8 +49,12 @@ export default function ProductList({ categoriaNombre, productos }) {
     return item?.cantidad || 0;
   }
 
+  function obtenerImagen(producto) {
+    return producto.imagen_url || "";
+  }
+
   function aumentar(producto) {
-    const imagen = obtenerImagenProducto(categoriaNombre, producto.nombre);
+    const imagen = obtenerImagen(producto);
 
     const nuevoCarrito = [...carrito];
     const index = nuevoCarrito.findIndex(
@@ -74,12 +64,18 @@ export default function ProductList({ categoriaNombre, productos }) {
     if (index >= 0) {
       nuevoCarrito[index] = {
         ...nuevoCarrito[index],
+        nombre: producto.nombre,
+        descripcion: producto.descripcion || "",
+        precio: Number(producto.precio || 0),
+        categoria: categoriaNombre,
+        imagen,
         cantidad: Number(nuevoCarrito[index].cantidad || 0) + 1,
       };
     } else {
       nuevoCarrito.push({
         id: String(producto.id),
         nombre: producto.nombre,
+        descripcion: producto.descripcion || "",
         precio: Number(producto.precio || 0),
         categoria: categoriaNombre,
         imagen,
@@ -117,10 +113,7 @@ export default function ProductList({ categoriaNombre, productos }) {
         ) : (
           productos.map((producto) => {
             const cantidad = obtenerCantidad(producto.id);
-            const imagen = obtenerImagenProducto(
-              categoriaNombre,
-              producto.nombre
-            );
+            const imagen = obtenerImagen(producto);
 
             return (
               <article
@@ -128,17 +121,29 @@ export default function ProductList({ categoriaNombre, productos }) {
                 className="flex w-full items-center gap-2.5 rounded-[1.35rem] bg-gradient-to-br from-white via-zinc-50 to-zinc-200 p-2.5 text-black shadow-lg shadow-black/15 ring-1 ring-black/10"
               >
                 <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-gradient-to-br from-zinc-100 to-white ring-1 ring-black/10">
-                  <img
-                    src={imagen}
-                    alt={producto.nombre}
-                    className="h-full w-full object-contain p-1"
-                  />
+                  {imagen ? (
+                    <img
+                      src={imagen}
+                      alt={producto.nombre}
+                      className="h-full w-full object-contain p-1"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center px-2 text-center text-[9px] font-black uppercase leading-tight text-zinc-400">
+                      Sin imagen
+                    </div>
+                  )}
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <h2 className="line-clamp-2 text-[13px] font-black uppercase leading-tight text-zinc-950">
                     {producto.nombre}
                   </h2>
+
+                  {producto.descripcion ? (
+                    <p className="mt-1 line-clamp-2 text-[10px] font-bold leading-snug text-zinc-500">
+                      {producto.descripcion}
+                    </p>
+                  ) : null}
 
                   <p className="mt-1 text-lg font-black leading-none text-[#d94b16]">
                     {precioMXN(producto.precio)}

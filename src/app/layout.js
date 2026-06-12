@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from "@/components/Header";
-import CartBar from "@/components/CartBar";
+import CartBarControl from "@/components/CartBarControl";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -69,7 +69,7 @@ export default function RootLayout({ children }) {
 
         <main className="flex flex-1 flex-col bg-[radial-gradient(circle_at_top,#ff8b24_0%,#d94b16_45%,#9f2d0c_100%)] text-white">
           {children}
-          <CartBar />
+          <CartBarControl />
         </main>
 
         <Footer />
