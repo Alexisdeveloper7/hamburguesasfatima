@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const NUMERO_WHATSAPP = "523312891927";
+const NUMERO_WHATSAPP = "523310128754";
 
 function precioMXN(precio) {
   return new Intl.NumberFormat("es-MX", {
