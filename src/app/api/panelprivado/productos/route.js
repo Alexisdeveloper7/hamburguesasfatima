@@ -42,20 +42,11 @@ function limpiarYValidarExtras(extras) {
   return { extrasLimpios, error: "" };
 }
 
-export async function PATCH(request, { params }) {
+export async function POST(request) {
   try {
-    const { id } = await params;
-    const productoId = Number(id);
-
-    if (!productoId) {
-      return NextResponse.json(
-        { error: "Producto no válido." },
-        { status: 400 }
-      );
-    }
-
     const body = await request.json();
 
+    const categoriaId = Number(body.categoria_id);
     const nombre = String(body.nombre || "").trim();
     const descripcion = String(body.descripcion || "").trim();
     const imagen_url = String(body.imagen_url || "").trim();
@@ -69,6 +60,13 @@ export async function PATCH(request, { params }) {
 
     if (errorExtras) {
       return NextResponse.json({ error: errorExtras }, { status: 400 });
+    }
+
+    if (!categoriaId) {
+      return NextResponse.json(
+        { error: "Categoría no válida." },
+        { status: 400 }
+      );
     }
 
     if (!nombre) {
@@ -93,15 +91,24 @@ export async function PATCH(request, { params }) {
     }
 
     const productos = await sql`
-      UPDATE productos
-      SET
-        nombre = ${nombre},
-        descripcion = ${descripcion},
-        imagen_url = ${imagen_url},
-        precio = ${precio},
-        disponible = ${disponible},
-        orden = ${orden}
-      WHERE id = ${productoId}
+      INSERT INTO productos (
+        categoria_id,
+        nombre,
+        descripcion,
+        imagen_url,
+        precio,
+        disponible,
+        orden
+      )
+      VALUES (
+        ${categoriaId},
+        ${nombre},
+        ${descripcion},
+        ${imagen_url},
+        ${precio},
+        ${disponible},
+        ${orden}
+      )
       RETURNING
         id,
         categoria_id,
@@ -115,18 +122,6 @@ export async function PATCH(request, { params }) {
 
     const producto = productos[0];
 
-    if (!producto) {
-      return NextResponse.json(
-        { error: "No se encontró el producto." },
-        { status: 404 }
-      );
-    }
-
-    await sql`
-      DELETE FROM producto_extras
-      WHERE producto_id = ${productoId}
-    `;
-
     for (const extra of extrasLimpios) {
       await sql`
         INSERT INTO producto_extras (
@@ -135,7 +130,7 @@ export async function PATCH(request, { params }) {
           precio
         )
         VALUES (
-          ${productoId},
+          ${producto.id},
           ${extra.nombre},
           ${extra.precio}
         )
@@ -148,7 +143,7 @@ export async function PATCH(request, { params }) {
         nombre,
         precio
       FROM producto_extras
-      WHERE producto_id = ${productoId}
+      WHERE producto_id = ${producto.id}
       ORDER BY id ASC
     `;
 
@@ -160,49 +155,10 @@ export async function PATCH(request, { params }) {
       },
     });
   } catch (error) {
-    console.error("Error actualizando producto:", error);
+    console.error("Error creando producto:", error);
 
     return NextResponse.json(
-      { error: "Error interno al guardar el producto." },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(request, { params }) {
-  try {
-    const { id } = await params;
-    const productoId = Number(id);
-
-    if (!productoId) {
-      return NextResponse.json(
-        { error: "Producto no válido." },
-        { status: 400 }
-      );
-    }
-
-    const productos = await sql`
-      DELETE FROM productos
-      WHERE id = ${productoId}
-      RETURNING id
-    `;
-
-    if (!productos[0]) {
-      return NextResponse.json(
-        { error: "No se encontró el producto." },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      ok: true,
-      id: productoId,
-    });
-  } catch (error) {
-    console.error("Error eliminando producto:", error);
-
-    return NextResponse.json(
-      { error: "Error interno al eliminar el producto." },
+      { error: "Error interno al crear el producto." },
       { status: 500 }
     );
   }

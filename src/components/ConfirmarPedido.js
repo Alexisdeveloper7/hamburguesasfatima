@@ -167,8 +167,8 @@ Total: ${precioMXN(resumen.total)}`;
                 setNombre(e.target.value);
                 setErrores((prev) => ({ ...prev, nombre: "" }));
               }}
-              placeholder="Ej. Juan Pérez"
-              className={`mt-0.5 h-9 w-full rounded-xl border bg-zinc-100 px-3 text-xs font-bold outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 ${
+              placeholder=""
+              className={`mt-0.5 h-9 w-full rounded-xl border bg-zinc-100 px-3 text-[16px] font-bold outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 md:text-xs ${
                 errores.nombre
                   ? "border-red-300 ring-1 ring-red-200 focus:ring-red-400"
                   : "border-black/10 focus:ring-[#d94b16]"
@@ -195,7 +195,7 @@ Total: ${precioMXN(resumen.total)}`;
               }}
               placeholder="Calle, número, colonia y referencias"
               rows={2}
-              className={`mt-0.5 w-full resize-none rounded-xl border bg-zinc-100 px-3 py-1.5 text-xs font-bold leading-snug outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 ${
+              className={`mt-0.5 w-full resize-none rounded-xl border bg-zinc-100 px-3 py-1.5 text-[16px] font-bold leading-snug outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 md:text-xs ${
                 errores.direccion
                   ? "border-red-300 ring-1 ring-red-200 focus:ring-red-400"
                   : "border-black/10 focus:ring-[#d94b16]"
@@ -217,9 +217,9 @@ Total: ${precioMXN(resumen.total)}`;
             <textarea
               value={nota}
               onChange={(e) => setNota(e.target.value)}
-              placeholder="Ej. sin verdura, sin cebolla, con más salsa..."
+              placeholder="Ej. sin verdura, sin cebolla..."
               rows={2}
-              className="mt-0.5 w-full resize-none rounded-xl border border-black/10 bg-zinc-100 px-3 py-1.5 text-xs font-bold leading-snug outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-[#d94b16]"
+              className="mt-0.5 w-full resize-none rounded-xl border border-black/10 bg-zinc-100 px-3 py-1.5 text-[16px] font-bold leading-snug outline-none transition placeholder:text-zinc-400 focus:bg-white focus:ring-2 focus:ring-[#d94b16] md:text-xs"
             />
           </div>
 

@@ -22,21 +22,47 @@ async function obtenerCategoria(id) {
 async function obtenerProductos(categoriaId) {
   const productos = await sql`
     SELECT 
-      id,
-      categoria_id,
-      nombre,
-      descripcion,
-      imagen_url,
-      precio,
-      disponible,
-      orden
-    FROM productos
-    WHERE categoria_id = ${categoriaId}
-    AND disponible = true
-    ORDER BY orden ASC, id ASC
+      p.id,
+      p.categoria_id,
+      p.nombre,
+      p.descripcion,
+      p.imagen_url,
+      p.precio,
+      p.disponible,
+      p.orden,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', pe.id,
+            'producto_id', pe.producto_id,
+            'nombre', pe.nombre,
+            'precio', pe.precio
+          )
+          ORDER BY pe.id ASC
+        ) FILTER (WHERE pe.id IS NOT NULL),
+        '[]'::json
+      ) AS extras
+    FROM productos p
+    LEFT JOIN producto_extras pe
+      ON pe.producto_id = p.id
+    WHERE p.categoria_id = ${categoriaId}
+    AND p.disponible = true
+    GROUP BY 
+      p.id,
+      p.categoria_id,
+      p.nombre,
+      p.descripcion,
+      p.imagen_url,
+      p.precio,
+      p.disponible,
+      p.orden
+    ORDER BY p.orden ASC, p.id ASC
   `;
 
-  return productos;
+  return productos.map((producto) => ({
+    ...producto,
+    extras: Array.isArray(producto.extras) ? producto.extras : [],
+  }));
 }
 
 export default async function CategoriaPage({ params }) {
