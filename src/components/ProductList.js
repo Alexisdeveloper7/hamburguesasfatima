@@ -32,7 +32,7 @@ function guardarCarrito(carrito) {
 }
 
 function obtenerImagen(producto) {
-  return producto.imagen_url || "";
+  return producto?.imagen_url || "";
 }
 
 function obtenerExtras(producto) {
@@ -229,42 +229,65 @@ export default function ProductList({ categoriaNombre, productos }) {
             productosSeguros.map((producto) => {
               const cantidad = obtenerCantidad(producto.id);
               const imagen = obtenerImagen(producto);
+              const tieneImagen = Boolean(imagen);
 
               return (
                 <article
                   key={producto.id}
-                  className="flex w-full items-center gap-2.5 rounded-[1.35rem] bg-gradient-to-br from-white via-zinc-50 to-zinc-200 p-2.5 text-black shadow-lg shadow-black/15 ring-1 ring-black/10"
+                  className={`relative flex w-full items-center overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-white via-[#fffaf7] to-[#f3f4f6] text-black shadow-lg shadow-black/15 ring-1 ring-black/10 ${
+                    tieneImagen ? "gap-2.5 p-2.5" : "p-3.5"
+                  }`}
                 >
-                  <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white ring-1 ring-black/10">
-                    {imagen ? (
+                  {tieneImagen ? (
+                    <div className="relative z-10 flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[1rem] bg-white ring-1 ring-black/10">
                       <img
                         src={imagen}
                         alt={producto.nombre}
                         className="h-full w-full bg-white object-contain p-1"
                       />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-white px-2 text-center text-[9px] font-black uppercase leading-tight text-zinc-400">
-                        Sin imagen
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : null}
 
-                  <div className="min-w-0 flex-1">
-                    <h2 className="line-clamp-2 text-[13px] font-black uppercase leading-tight text-zinc-950">
-                      {producto.nombre}
-                    </h2>
+                  <div className="relative z-10 min-w-0 flex-1">
+                    <div
+                      className={
+                        tieneImagen
+                          ? ""
+                          : "border-l-4 border-[#d94b16] pl-3"
+                      }
+                    >
+                      <h2
+                        className={`line-clamp-2 font-black uppercase leading-tight text-zinc-950 ${
+                          tieneImagen ? "text-[13px]" : "text-[14px]"
+                        }`}
+                      >
+                        {producto.nombre}
+                      </h2>
 
-                    {producto.descripcion ? (
-                      <p className="mt-1 line-clamp-2 text-[10px] font-bold leading-snug text-zinc-500">
-                        {producto.descripcion}
+                      {producto.descripcion ? (
+                        <p
+                          className={`mt-1 line-clamp-2 font-bold leading-snug text-zinc-500 ${
+                            tieneImagen ? "text-[10px]" : "text-[11px]"
+                          }`}
+                        >
+                          {producto.descripcion}
+                        </p>
+                      ) : null}
+
+                      <p
+                        className={`mt-1 font-black leading-none text-[#d94b16] ${
+                          tieneImagen ? "text-lg" : "text-xl"
+                        }`}
+                      >
+                        {precioMXN(producto.precio)}
                       </p>
-                    ) : null}
+                    </div>
 
-                    <p className="mt-1 text-lg font-black leading-none text-[#d94b16]">
-                      {precioMXN(producto.precio)}
-                    </p>
-
-                    <div className="mt-2 flex items-center gap-1.5">
+                    <div
+                      className={`flex items-center gap-1.5 ${
+                        tieneImagen ? "mt-2" : "mt-3"
+                      }`}
+                    >
                       <button
                         type="button"
                         onClick={() => disminuir(producto)}

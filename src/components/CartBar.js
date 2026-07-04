@@ -29,6 +29,23 @@ function guardarCarrito(carrito) {
   window.dispatchEvent(new Event("carrito-actualizado"));
 }
 
+function obtenerExtrasDelItem(item) {
+  if (!Array.isArray(item?.extras)) return [];
+
+  return item.extras.filter((extra) => {
+    if (!extra) return false;
+    if (!extra.nombre) return false;
+
+    const precio = Number(extra.precio);
+
+    return Number.isFinite(precio) && precio >= 0;
+  });
+}
+
+function obtenerNotaDelItem(item) {
+  return String(item?.nota || "").trim();
+}
+
 export default function CartBar() {
   const cartRef = useRef(null);
 
@@ -111,7 +128,7 @@ export default function CartBar() {
 
   return (
     <>
-      <div ref={cartRef} className="sticky bottom-2 z-40  w-full px-3 pb-4">
+      <div ref={cartRef} className="sticky bottom-2 z-40 w-full px-3 pb-4">
         <section className="mx-auto w-full max-w-2xl overflow-hidden rounded-[1.3rem] border border-orange-300/50 bg-gradient-to-br from-[#fff3df] via-[#ffe1bd] to-[#ffc06f] text-zinc-950 shadow-[0_16px_42px_rgba(154,72,18,0.28)] ring-1 ring-white/40 backdrop-blur-xl">
           <div className="relative overflow-hidden">
             <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-yellow-200/65 blur-3xl" />
@@ -166,6 +183,8 @@ export default function CartBar() {
                       const cantidad = Number(item.cantidad || 0);
                       const precio = Number(item.precio || 0);
                       const subtotalProducto = cantidad * precio;
+                      const extras = obtenerExtrasDelItem(item);
+                      const notaItem = obtenerNotaDelItem(item);
 
                       return (
                         <div
@@ -180,6 +199,29 @@ export default function CartBar() {
                             <p className="mt-0.5 text-[9px] font-bold leading-tight text-zinc-600">
                               {cantidad} x {precioMXN(precio)}
                             </p>
+
+                            {extras.length > 0 && (
+                              <div className="mt-1 space-y-0.5 rounded-lg bg-orange-100/70 px-2 py-1 ring-1 ring-orange-700/10">
+                                <p className="text-[7px] font-black uppercase tracking-[0.1em] text-orange-900/70">
+                                  Extras
+                                </p>
+
+                                {extras.map((extra, index) => (
+                                  <p
+                                    key={`${extra.id || extra.nombre}-${index}`}
+                                    className="break-words text-[8.5px] font-black leading-tight text-orange-800"
+                                  >
+                                    + {extra.nombre} {precioMXN(extra.precio)}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
+
+                            {notaItem && (
+                              <p className="mt-1 break-words rounded-lg bg-white/60 px-2 py-1 text-[8.5px] font-bold leading-tight text-zinc-600 ring-1 ring-black/5">
+                                Nota: {notaItem}
+                              </p>
+                            )}
                           </div>
 
                           <p className="shrink-0 text-[10px] font-black text-orange-800">

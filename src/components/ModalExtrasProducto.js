@@ -56,9 +56,7 @@ export default function ModalExtrasProducto({
   if (!abierto || !producto || extras.length === 0) return null;
 
   function cambiarExtra(extra) {
-    const yaExiste = extrasSeleccionados.some(
-      (item) => item.id === extra.id
-    );
+    const yaExiste = extrasSeleccionados.some((item) => item.id === extra.id);
 
     if (yaExiste) {
       setExtrasSeleccionados((actuales) =>
@@ -87,124 +85,192 @@ export default function ModalExtrasProducto({
 
   return (
     <>
-      <div className="fixed left-0 right-0 top-0 z-[100] h-[calc(100dvh+96px)] bg-black/80 backdrop-blur-md" />
+      <div
+        className="fixed inset-0 z-[100] bg-orange-950/45 backdrop-blur-md"
+        onClick={onCerrar}
+      />
 
-      <div className="fixed inset-0 z-[101] flex h-[100dvh] items-center justify-center overflow-hidden overflow-x-hidden px-3 py-3">
-        <div className="max-h-[calc(100dvh-24px)] w-full max-w-[330px] overflow-y-auto overflow-x-hidden rounded-[1.4rem] bg-white text-black shadow-[0_22px_70px_rgba(0,0,0,0.55)] ring-1 ring-white/20">
-          <div className="relative overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-[#8f2b0d] px-4 py-3 text-white">
-            <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[#fff200]/25 blur-2xl" />
-            <div className="absolute -left-10 bottom-0 h-20 w-20 rounded-full bg-[#d94b16]/25 blur-2xl" />
+      <div className="fixed inset-0 z-[101] flex h-[100dvh] items-center justify-center overflow-hidden px-3 py-3">
+        <div
+          className="max-h-[calc(100dvh-24px)] w-full max-w-[350px] overflow-y-auto overflow-x-hidden rounded-[1.55rem] border border-orange-300/55 bg-gradient-to-br from-[#fff8ee] via-[#ffe8c8] to-[#ffc978] text-zinc-950 shadow-[0_24px_75px_rgba(154,72,18,0.45)] ring-1 ring-white/60"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="relative overflow-hidden">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-yellow-200/75 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-orange-500/25 blur-3xl" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_43%)]" />
 
-            <div className="relative flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[8px] font-black uppercase tracking-[0.18em] text-[#fff200]">
-                  Personalizar producto
-                </p>
+            <div className="relative p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-orange-600/10 px-2 py-0.5 ring-1 ring-orange-700/10">
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-600" />
 
-                <h3 className="mt-1 line-clamp-2 text-base font-black uppercase leading-tight">
-                  {producto.nombre}
-                </h3>
+                    <p className="text-[7px] font-black uppercase tracking-[0.15em] text-orange-800">
+                      Personalizar producto
+                    </p>
+                  </div>
 
-                <p className="mt-1 text-[10px] font-semibold leading-snug text-white/70">
-                  Puedes elegir extras o agregarlo sin extras.
-                </p>
+                  <h3 className="mt-1.5 break-words text-[16px] font-black uppercase leading-tight text-zinc-950">
+                    {producto.nombre}
+                  </h3>
+
+                  <p className="mt-0.5 text-[9.5px] font-bold leading-tight text-zinc-700">
+                    Elige los extras que quieras agregar a este producto.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={onCerrar}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/75 text-xs font-black text-orange-800 transition active:scale-95"
+                  aria-label="Cerrar modal"
+                >
+                  ✕
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={onCerrar}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-black text-white ring-1 ring-white/15 active:scale-95"
-                aria-label="Cerrar modal"
-              >
-                ✕
-              </button>
-            </div>
+              <div className="mt-3 rounded-[1.2rem] bg-orange-900/5 px-3 py-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[7px] font-black uppercase tracking-[0.14em] text-orange-800">
+                      Total producto
+                    </p>
 
-            <div className="relative mt-2 rounded-xl bg-black/35 px-3 py-2 ring-1 ring-white/15">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.12em] text-white">
-                  Total producto
-                </p>
+                    <p className="mt-0.5 text-[9px] font-bold leading-tight text-zinc-700">
+                      Precio base + extras
+                    </p>
+                  </div>
 
-                <p className="shrink-0 text-lg font-black leading-none text-[#fff200]">
-                  {precioMXN(totalProducto)}
-                </p>
+                  <div className="shrink-0 rounded-[1rem] bg-gradient-to-br from-[#ffcf42] via-[#ffc02e] to-[#f59e0b] px-3 py-1.5 text-right">
+                    <p className="text-[17px] font-black leading-none text-zinc-950">
+                      {precioMXN(totalProducto)}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="space-y-3 overflow-x-hidden p-3">
-            <div className="overflow-x-hidden">
-              <p className="mb-1 text-[9px] font-black uppercase tracking-[0.1em] text-zinc-500">
-                Extras opcionales
+              <div className="mt-2 rounded-[1.15rem] bg-white/50 px-3 py-2 backdrop-blur">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-[8px] font-black uppercase tracking-[0.12em] text-orange-900">
+                      Pulsa para elegir extras
+                    </p>
+
+                    <p className="mt-0.5 text-[8.5px] font-bold leading-tight text-zinc-600">
+                      Toca una opción para agregarla o quitarla.
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 rounded-full bg-orange-100 px-2 py-1 text-[8px] font-black uppercase text-orange-800">
+                    {extrasSeleccionados.length} elegido
+                    {extrasSeleccionados.length === 1 ? "" : "s"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2 rounded-[1.2rem] bg-[#fff0d8]/80 p-2.5 backdrop-blur">
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <p className="text-[8px] font-black uppercase tracking-[0.12em] text-orange-900/75">
+                    Extras opcionales
+                  </p>
+
+                  {extrasSeleccionados.length > 0 && (
+                    <p className="rounded-full bg-orange-600/10 px-2 py-0.5 text-[7px] font-black uppercase text-orange-800">
+                      + {precioMXN(totalExtras)}
+                    </p>
+                  )}
+                </div>
+
+                <div className="max-h-[230px] space-y-1.5 overflow-y-auto overflow-x-hidden pr-0.5">
+                  {extras.map((extra) => {
+                    const activo = extrasSeleccionados.some(
+                      (item) => item.id === extra.id
+                    );
+
+                    return (
+                      <button
+                        key={extra.id}
+                        type="button"
+                        onClick={() => cambiarExtra(extra)}
+                        className={`group flex min-h-11 w-full min-w-0 items-center justify-between gap-2.5 rounded-[1rem] px-3 py-2 text-left text-[10px] font-black uppercase leading-tight transition active:scale-[0.98] ${
+                          activo
+                            ? "bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 text-white"
+                            : "bg-orange-100/80 text-zinc-900 hover:bg-orange-200/75"
+                        }`}
+                      >
+                        <span className="flex min-w-0 flex-1 items-center gap-2">
+                          <span
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-black ${
+                              activo
+                                ? "bg-white text-orange-700"
+                                : "bg-white/80 text-orange-800"
+                            }`}
+                          >
+                            {activo ? "✓" : "+"}
+                          </span>
+
+                          <span className="min-w-0 break-words">
+                            {extra.nombre}
+                          </span>
+                        </span>
+
+                        <span
+                          className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-black ${
+                            activo
+                              ? "bg-white/20 text-white"
+                              : "bg-yellow-300/80 text-orange-900"
+                          }`}
+                        >
+                          + {precioMXN(extra.precio)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-2 rounded-[1.2rem] bg-white/60 p-2.5 backdrop-blur">
+                <div className="flex justify-between gap-3 text-[9px] font-bold text-zinc-600">
+                  <span>Precio base</span>
+                  <span className="shrink-0">{precioMXN(producto.precio)}</span>
+                </div>
+
+                <div className="mt-0.5 flex justify-between gap-3 text-[9px] font-bold text-zinc-600">
+                  <span>Extras seleccionados</span>
+                  <span className="shrink-0">+ {precioMXN(totalExtras)}</span>
+                </div>
+
+                <div className="mt-1.5 flex justify-between gap-3 border-t border-orange-900/10 pt-1.5 text-[13px] font-black text-zinc-950">
+                  <span>Total</span>
+
+                  <span className="shrink-0 text-orange-800">
+                    {precioMXN(totalProducto)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-2 grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={onCerrar}
+                  className="flex min-h-10 items-center justify-center rounded-[1rem] bg-orange-100/80 px-3 py-2 text-[9px] font-black uppercase text-zinc-900 transition active:scale-[0.98]"
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={confirmarAgregar}
+                  className="flex min-h-10 items-center justify-center rounded-[1rem] bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 px-3 py-2 text-[9px] font-black uppercase tracking-[0.04em] text-white transition active:scale-[0.98]"
+                >
+                  Agregar
+                </button>
+              </div>
+
+              <p className="mt-2 text-center text-[8px] font-bold leading-tight text-zinc-600">
+                También puedes agregar el producto sin seleccionar extras.
               </p>
-
-              <div className="max-h-[230px] space-y-1.5 overflow-y-auto overflow-x-hidden pr-0.5">
-                {extras.map((extra) => {
-                  const activo = extrasSeleccionados.some(
-                    (item) => item.id === extra.id
-                  );
-
-                  return (
-                    <button
-                      key={extra.id}
-                      type="button"
-                      onClick={() => cambiarExtra(extra)}
-                      className={`flex min-h-10 w-full min-w-0 items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-[11px] font-black uppercase transition active:scale-[0.98] ${
-                        activo
-                          ? "bg-zinc-950 text-white ring-2 ring-[#d94b16]"
-                          : "bg-zinc-100 text-zinc-800 ring-1 ring-black/10"
-                      }`}
-                    >
-                      <span className="min-w-0 flex-1 truncate">
-                        {extra.nombre}
-                      </span>
-
-                      <span className="shrink-0">
-                        + {precioMXN(extra.precio)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="rounded-xl bg-zinc-100 p-2.5 ring-1 ring-black/10">
-              <div className="flex justify-between gap-3 text-[10px] font-bold text-zinc-500">
-                <span>Precio base</span>
-                <span className="shrink-0">{precioMXN(producto.precio)}</span>
-              </div>
-
-              <div className="mt-0.5 flex justify-between gap-3 text-[10px] font-bold text-zinc-500">
-                <span>Extras</span>
-                <span className="shrink-0">+ {precioMXN(totalExtras)}</span>
-              </div>
-
-              <div className="mt-1.5 flex justify-between gap-3 border-t border-black/10 pt-1.5 text-sm font-black text-zinc-950">
-                <span>Total</span>
-
-                <span className="shrink-0 text-[#d94b16]">
-                  {precioMXN(totalProducto)}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-1.5 pt-0.5">
-              <button
-                type="button"
-                onClick={onCerrar}
-                className="flex min-h-10 items-center justify-center rounded-xl bg-zinc-200 px-3 py-2 text-[10px] font-black uppercase text-zinc-800 transition active:scale-[0.98]"
-              >
-                Cancelar
-              </button>
-
-              <button
-                type="button"
-                onClick={confirmarAgregar}
-                className="flex min-h-10 items-center justify-center rounded-xl bg-[#d94b16] px-3 py-2 text-[10px] font-black uppercase text-white shadow-md shadow-[#d94b16]/25 transition active:scale-[0.98]"
-              >
-                Agregar
-              </button>
             </div>
           </div>
         </div>

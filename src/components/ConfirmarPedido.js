@@ -1,3 +1,5 @@
+// components/ConfirmarPedido.jsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,6 +11,36 @@ function precioMXN(precio) {
     style: "currency",
     currency: "MXN",
   }).format(Number(precio || 0));
+}
+
+function obtenerExtrasTexto(item) {
+  if (!Array.isArray(item?.extras) || item.extras.length === 0) {
+    return "";
+  }
+
+  return item.extras
+    .map((extra) => {
+      const nombre = extra?.nombre || extra?.name || "Extra";
+      const precio = Number(extra?.precio ?? extra?.price ?? 0);
+
+      return `   + ${nombre} ${precioMXN(precio)}`;
+    })
+    .join("\n");
+}
+
+function obtenerNotaTexto(item) {
+  const nota = String(item?.nota || "").trim();
+
+  if (!nota) return "";
+
+  return `   Nota: ${nota}`;
+}
+
+function obtenerSubtotalItem(item) {
+  const cantidad = Number(item?.cantidad || 0);
+  const precioUnitario = Number(item?.precio || 0);
+
+  return cantidad * precioUnitario;
 }
 
 export default function ConfirmarPedido({
@@ -54,9 +86,16 @@ export default function ConfirmarPedido({
     const productos = carrito
       .map((item) => {
         const cantidad = Number(item.cantidad || 0);
-        return `• ${cantidad} x ${item.nombre}`;
+        const extrasTexto = obtenerExtrasTexto(item);
+        const notaTexto = obtenerNotaTexto(item);
+        const subtotalItem = obtenerSubtotalItem(item);
+
+        return `• ${cantidad} x ${item.nombre}${
+          extrasTexto ? `\n${extrasTexto}` : ""
+        }${notaTexto ? `\n${notaTexto}` : ""}
+   Subtotal: ${precioMXN(subtotalItem)}`;
       })
-      .join("\n");
+      .join("\n\n");
 
     return `🍔 Pedido Hamburguesas Fátima
 
@@ -73,6 +112,7 @@ export default function ConfirmarPedido({
     }
 
 🛒 Productos:
+
 ${productos}
 
 Subtotal: ${precioMXN(resumen.subtotal)}
